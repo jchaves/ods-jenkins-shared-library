@@ -97,9 +97,17 @@ class NexusService {
             restCall = restCall.field(key, value)
         }
 
-        restCall = restCall.field(
-            repositoryType == 'raw' || repositoryType == 'maven2' ? "${repositoryType}.asset1" : "${repositoryType}.asset",
-            new ByteArrayInputStream(artifact), contentType)
+        if (repositoryType == 'pypi') {
+	    restCall = restCall.field("pypi.asset",
+                new ByteArrayInputStream(artifact), 
+		ContentType.create(contentType), 
+		nexusParams['filename'])
+        }
+	else {
+            restCall = restCall.field(
+                repositoryType == 'raw' || repositoryType == 'maven2' ? "${repositoryType}.asset1" : "${repositoryType}.asset",
+                new ByteArrayInputStream(artifact), contentType)
+        }
 
         def response = restCall.asString()
         response.ifSuccess {
