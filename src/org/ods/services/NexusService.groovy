@@ -4,6 +4,7 @@ package org.ods.services
 
 import com.cloudbees.groovy.cps.NonCPS
 import kong.unirest.Unirest
+import kong.unirest.ContentType
 import org.apache.http.client.utils.URIBuilder
 
 class NexusService {
@@ -100,8 +101,8 @@ class NexusService {
         if (repositoryType == 'pypi') {
 	    restCall = restCall.field("pypi.asset",
                 new ByteArrayInputStream(artifact), 
-		ContentType.create(contentType), 
-		nexusParams['filename'])
+                ContentType.create(contentType), 
+                nexusParams['pypi.asset'].substring( nexusParams['pypi.asset'].lastIndexOf("/") + 1 ))
         }
 	else {
             restCall = restCall.field(
